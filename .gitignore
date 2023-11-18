@@ -1,0 +1,12 @@
+/build
+__pycache__/
+
+.idea
+.vscode
+data
+result_images
+runs
+saved_model
+
+lightning_logs
+test_images
