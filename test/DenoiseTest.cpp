@@ -10,36 +10,50 @@
 #include <opencv2/opencv.hpp>
 
 #include "../include/CLDenoise.h"
-
+//#include "../include/ThreadPool.h"
+using namespace torch;
+using namespace std;
+using namespace cv;
 
 extern std::string g_model_path;
 extern std::shared_ptr<torch::jit::script::Module> g_model;
 extern std::vector<cv::Mat> g_img_vec;
 extern std::vector<std::thread> g_thread_vec;
-std::string img_path = "../../pic/noise_Testing.png";
-// åŠ è½½æ¨¡åž‹
+
+// ¼ÓÔØÄ£ÐÍ
 void InitModel() {
 	g_model = std::make_shared<torch::jit::script::Module>(torch::jit::load(g_model_path));
 }
 
-void MainLoopDenoise() {
+int main() {
+    // C:/Users/liuzhiyi/Desktop/UnetDenoise/
+    string model_path = "../../models/libtorch-model-gpu.pt";
+    string img_path = "../../pic/noise_Testing.png";
     
+    //std::shared_ptr<torch::jit::script::Module> model = std::make_shared<torch::jit::script::Module>(model_path);
+    cout << "model path: " << model_path << endl;
+    cout << "img path: " << img_path << endl;
+
+    cout << "init model" << endl;
+    InitModel();
+
+    cout << "main loop begin" << endl;
     if (g_model == nullptr) {
-        std::cout << "model is nullptr" << std::endl;
+        cout << "model is nullptr" << endl;
         std::runtime_error("model is nullptr\n");
     }
-    int flag = 0;
+    int flag;
     for (;;) {
-        // æ”¶åˆ°å‰ç«¯èŽ·å¾—çš„å›¾ç‰‡
+        // ÊÕµ½Ç°¶Ë»ñµÃµÄÍ¼Æ¬
 
-        // å‘g_img_vecä¸­æ·»åŠ å›¾ç‰‡
+        // Ïòg_img_vecÖÐÌí¼ÓÍ¼Æ¬
         if (flag == 0) {
             g_img_vec.push_back(cv::imread(img_path, cv::IMREAD_COLOR));
             flag++;
         }
-        // å¦‚æžœg_img_vecä¸­æœ‰å›¾ç‰‡ï¼Œæ–°å»ºçº¿ç¨‹è¿›è¡Œå›¾ç‰‡åŽ»å™ª
+        // Èç¹ûg_img_vecÖÐÓÐÍ¼Æ¬£¬ÐÂ½¨Ïß³Ì½øÐÐÍ¼Æ¬È¥Ôë
         while (g_img_vec.size() > 0) {
-            std::cout << "g_img_vec size: " << g_img_vec.size() << std::endl;
+			cout << "g_img_vec size: " << g_img_vec.size() << endl;
 			DenoiseOP denoise_op;
             denoise_op.LoadImage(g_img_vec[0]);
             std::thread denoise_thread(&DenoiseOP::DenoiseUML, &denoise_op);
@@ -49,20 +63,7 @@ void MainLoopDenoise() {
 		}
         
     }
-}
-
-int main() {
-    // C:/Users/liuzhiyi/Desktop/UnetDenoise/
-    
-    //std::shared_ptr<torch::jit::script::Module> model = std::make_shared<torch::jit::script::Module>(model_path);
-    std::cout << "model path: " << g_model_path << std::endl;
-    std::cout << "img path: " << img_path << std::endl;
-
-    std::cout << "init model" << std::endl;
-    InitModel();
-
-    std::cout << "main loop begin" << std::endl;
-    MainLoopDenoise();
+  
     return 0;
 }
 
