@@ -14,8 +14,7 @@
 #include <memory>
 #include <thread>
 
-// 线程数
-#define THREAD_NUM 10
+
 // 模型路径和模型
 std::string g_model_path = "../../models/libtorch-model-gpu.pt";
 std::shared_ptr<torch::jit::script::Module> g_model;

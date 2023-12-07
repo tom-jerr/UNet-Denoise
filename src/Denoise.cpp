@@ -11,7 +11,9 @@
 
 #include "../include/CLDenoise.h"
 #include "../include/CLLog.h"
-
+//#include "../include/CLThreadPool.h"
+// 线程数
+#define THREAD_NUM 2
 // 全局变量
 extern std::string g_model_path;
 extern std::shared_ptr<torch::jit::script::Module> g_model;
@@ -21,6 +23,7 @@ std::string img_path = "../../pic/noise_Testing.png";
 std::string log_path = "../../Log/DenoiseLog.txt";  
 //FILE* fp = fopen(log_path.c_str(), "a");
 Log* g_log;
+//ThreadPool g_pool(THREAD_NUM);
 // 去噪初始化
 void Init() {
 	g_model = std::make_shared<torch::jit::script::Module>(torch::jit::load(g_model_path));
@@ -62,6 +65,12 @@ void MainLoopDenoise() {
     }
 }
 
+//void ThreadPoolDenoise() {
+//    DenoiseOP* op = new DenoiseOP();
+//    op->LoadImage(img_path);
+//    g_pool.AddTask(op);
+//}
+
 int main() {
     // C:/Users/liuzhiyi/Desktop/UnetDenoise/
     
@@ -73,8 +82,10 @@ int main() {
     std::cout << "init model" << std::endl;
     Init();
     g_log->writeLog("Denoise success");
+    std::cout << g_log->getLogFileName()<< std::endl;
     std::cout << "main loop begin" << std::endl;
-    MainLoopDenoise();
+    /*MainLoopDenoise();*/
+    //ThreadPoolDenoise();
     return 0;
 }
 

@@ -16,6 +16,9 @@ class Log {
       return m_logInstance;
     }
     void writeLog(const char* logMsg);
+    std::string& getLogFileName() {
+	  return m_logFileName_;
+	}
 };
 
 Log* Log::m_logInstance = nullptr;
