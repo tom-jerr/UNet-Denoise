@@ -3,11 +3,17 @@ project(UnetDenoiseVSCode)
 # ------ Standard ------
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_CXX_EXTENSIONS OFF)
-
+set(CMAKE_CUDA_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-extended-lambda")
+set(CMAKE_PREFIX_PATH "/home/lzy/Libtorch/libtorch/share/cmake/Torch")
 # Export compile_commands.json
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(Torch_DIR /home/lzy/Libtorch/libtorch/share/cmake/Torch)
+# set(Torch_DIR "/home/lzy/Libtorch/libtorch")
+find_package(OpenCV REQUIRED)
+find_package(Torch REQUIRED)
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda-11.8/bin/nvcc")
 # set(CMAKE_BUILD_TYPE "Release")
 include_directories(include)
 add_subdirectory(test)

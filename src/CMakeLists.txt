@@ -1,4 +1,6 @@
 find_package(OpenCV REQUIRED)
 find_package(Torch REQUIRED)
-add_executable(DNOISE Denoise.cpp)
-target_link_libraries(DNOISE ${TORCH_LIBRARIES})
+# add_executable(DNOISE Denoise.cpp)
+add_library(DNOISE STATIC CLDenoise.cpp)
+target_include_directories(DNOISE PUBLIC ${OpenCV_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/include ${TORCH_INCLUDE_DIRS})
+target_link_libraries(DNOISE ${TORCH_LIBRARIES} ${OpenCV_LIBS})
