@@ -35,7 +35,7 @@ int main() {
 
   neo::DenoiseOP denoise_op(model_path);
   std::cout << "load image" << std::endl;
-  
+
   // cv::Mat img_post = denoise_op.GetImage();
   // imshow("src img", noise_img);
 
@@ -47,11 +47,13 @@ int main() {
   //   denoise_op.LoadImage(noise_img);
   //   denoise_op.DenoiseUML();
   // }
-    denoise_op.LoadImage(noise_img);
-    denoise_op.DenoiseUML();
+  denoise_op.LoadImage(noise_img);
+  denoise_op.DenoiseUML();
   gettimeofday(&end, nullptr);
-  std::cout << (end.tv_sec - start.tv_sec)*1000 + (end.tv_usec-start.tv_usec)/1000 << "ms" << std::endl;
-  std::cout << "time: "<<(end.tv_sec - start.tv_sec) << "s" << std::endl;
+  std::cout << (end.tv_sec - start.tv_sec) * 1000 +
+                   (end.tv_usec - start.tv_usec) / 1000
+            << "ms" << std::endl;
+  std::cout << "time: " << (end.tv_sec - start.tv_sec) << "s" << std::endl;
   cv::waitKey(0);
 
   return 0;
