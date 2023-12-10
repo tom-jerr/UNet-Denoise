@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <time.h>
 // torch heade
 #include "torch/torch.h"
 #include "torch/script.h"
@@ -20,7 +20,7 @@ extern std::shared_ptr<torch::jit::script::Module> g_model;
 extern std::vector<cv::Mat> g_img_vec;
 extern std::vector<std::thread> g_thread_vec;
 
-// ¼ÓÔØÄ£ÐÍ
+// ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½
 void InitModel() {
 	g_model = std::make_shared<torch::jit::script::Module>(torch::jit::load(g_model_path));
 }
@@ -44,21 +44,23 @@ int main() {
     }
     int flag;
     for (;;) {
-        // ÊÕµ½Ç°¶Ë»ñµÃµÄÍ¼Æ¬
+        // ï¿½Õµï¿½Ç°ï¿½Ë»ï¿½Ãµï¿½Í¼Æ¬
 
-        // Ïòg_img_vecÖÐÌí¼ÓÍ¼Æ¬
+        // ï¿½ï¿½g_img_vecï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬
         if (flag == 0) {
             g_img_vec.push_back(cv::imread(img_path, cv::IMREAD_COLOR));
             flag++;
         }
-        // Èç¹ûg_img_vecÖÐÓÐÍ¼Æ¬£¬ÐÂ½¨Ïß³Ì½øÐÐÍ¼Æ¬È¥Ôë
+        // ï¿½ï¿½ï¿½g_img_vecï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½Â½ï¿½ï¿½ß³Ì½ï¿½ï¿½ï¿½Í¼Æ¬È¥ï¿½ï¿½
         while (g_img_vec.size() > 0) {
 			cout << "g_img_vec size: " << g_img_vec.size() << endl;
 			DenoiseOP denoise_op;
+            time_t start = time(0);
             denoise_op.LoadImage(g_img_vec[0]);
             std::thread denoise_thread(&DenoiseOP::DenoiseUML, &denoise_op);
             denoise_thread.join();
-
+            time_t end = time(0);
+            std::cout << "Denoise time: " << end - start << "s" << std::endl;
 			g_img_vec.erase(g_img_vec.begin());
 		}
         

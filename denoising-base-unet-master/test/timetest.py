@@ -1,13 +1,16 @@
-import sys
+import sys, os
 sys.path.append('./denoising-base-unet-master')
-sys.path.append('./denoising-base-unet-master/models')
-from BaseUNet import BaseUNet
+# print(sys.path)
+from models.DenseBlock import DenseBlock
+from models.DownBlock import DownBlock
+from models.UpBlock import UpBlock
+from models.TransitionBlock import TransitionBlock
+from models.BaseUNet import BaseUNet
 from PIL import Image
 from torchvision import transforms
-import utils
+import models.utils as utils
 import torch 
 from torch.autograd import Variable
-
 
 utils.makeDirectories()
 batch_size = 128

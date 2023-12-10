@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append('./denoising-base-unet-master/models')
 import torch
 from torch import nn
 from TransitionBlock import TransitionBlock

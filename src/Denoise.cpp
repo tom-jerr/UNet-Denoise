@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 // torch heade
 #include "torch/torch.h"
 #include "torch/script.h"
