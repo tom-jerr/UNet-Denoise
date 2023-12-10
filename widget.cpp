@@ -7,6 +7,7 @@
 #include "CLDenoise.h"
 //#include <opencv2/opencv.hpp>
 
+// 创建主窗口
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     this->resize(1366,768);
     this->setWindowTitle("图像去噪");
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
     setLayout(mainLayout);
 }
 
+// 打开图片按钮的槽函数
 void MainWindow::onButtonClicked() {
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("打开图片"), "", tr("图片文件 (*.png *.jpg *.bmp)"));
@@ -69,6 +71,7 @@ void MainWindow::onButtonClicked() {
     }
 }
 
+// 添加噪声按钮的槽函数
 void MainWindow::onAddNoiseButtonClicked() {
     if (originalPixmap.isNull()) {
         return;
@@ -103,12 +106,15 @@ void MainWindow::onAddNoiseButtonClicked() {
     noisyImageLabel->setPixmap(noisyPixmap.scaled(noisyImageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
-
+// 去噪按钮的槽函数
 void MainWindow::onDenoiseButtonClicked() {
     if (noisyPixmap.isNull()) {
         return;
     }
 
+    // 判断图片是否为正方形
+    // 如果是正方形，则调用C++模型进行去噪
+    // 如果不是正方形，则使用Opencv的去噪算法进行去噪
     if(noisyPixmap.height() == noisyPixmap.width()){
         const char* resultFileName = "./pic/denoise_result.png";
         std::remove(resultFileName);
@@ -137,22 +143,9 @@ void MainWindow::onDenoiseButtonClicked() {
     denoisedImageLabel->setPixmap(denoisedPixmap.scaled(denoisedImageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     cv::imwrite("./pic/denoise_result.png", dstImage);
 
-    // // 锐化处理
-    // cv::Mat blurredImage;
-    // cv::GaussianBlur(dstImage, blurredImage, cv::Size(0, 0), 3);
-    // cv::addWeighted(dstImage, 1.5, blurredImage, -0.5, 0, dstImage);
-
-    // // 将锐化后的Mat转换回QPixmap
-    // QImage usmImage = QImage(dstImage.data, dstImage.cols, dstImage.rows, dstImage.step, QImage::Format_RGBA8888).rgbSwapped();
-    // QPixmap usmPixmap = QPixmap::fromImage(usmImage);
-
-    // // 显示USM锐化后的图片
-    // denoisedImageLabel->setPixmap(usmPixmap.scaled(denoisedImageLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-
-
 }
 
+// 检查文件是否存在
 bool checkFileExists(const std::string& filename) {
     while (true) {
         std::ifstream file(filename);

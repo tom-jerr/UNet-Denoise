@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CLDENOISE_H_
-#define CLDENOISE_H_
+#ifndef INCLUDE_CLDENOISE_H_ 
+#define INCLUDE_CLDENOISE_H_ 
 // torch header
 #undef slots
 #include <torch/torch.h>
@@ -31,27 +31,26 @@
 // 图像去噪的操作类
 class DenoiseOP {
   private:
-    cv::Mat m_image_;
-    std::string m_model_path_ = {"model/libtorch-model-gpu.pt"};
-    torch::DeviceType m_device_type_ = {torch::kCPU};
+    cv::Mat m_image_;                                 // 存放需要去噪的图片
+    torch::DeviceType m_device_type_ = {torch::kCPU}; // 选择设备类型
+    bool m_is_denoised_ = false;                      // 是否已经去噪
+    // std::string m_model_path_ = {"model/libtorch-model-gpu.pt"};
     //std::shared_ptr<torch::jit::script::Module> m_model_;
-    bool m_is_denoised_ = false;
   public:
 
-    DenoiseOP();
+    DenoiseOP();                                    
     //DenoiseOP(const std::string model_path);
     ~DenoiseOP();
-    void LoadImage(std::string image_path);
-    void LoadImage(cv::Mat image);
-    void Denoise();
-    void DenoiseUML();
-    cv::Mat GetImage();
+    void LoadImage(std::string image_path);         // 加载图片
+    void LoadImage(cv::Mat image);                  // 加载图片
+    void Denoise();                                 // Unet模型去噪
+    void DenoiseUML();                              // Unet模型+UML锐化去噪
+    cv::Mat GetImage();                             // 获取去噪后的图片
 };
 
 extern cv::Mat m_image_return;
-void Init();
-void MainLoopDenoise(std::string fileName);
-void InitModel();
+void Init();                                      // 初始化模型以及日志
+void MainLoopDenoise(std::string fileName);       // 去噪主循环
 void logOP();
-
-#endif /* CLDENOISE_H_ */
+// void InitModel(); 
+#endif  // INCLUDE_CLDENOISE_H_ 

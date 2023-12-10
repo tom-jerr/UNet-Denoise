@@ -2,9 +2,7 @@
 
 #include "CLDenoise.h"
 #include "CLLog.h"
-//#include "../include/CLThreadPool.h"
-// 线程数
-#define THREAD_NUM 2
+
 // 全局变量
 // extern std::string g_model_path;
 // extern std::shared_ptr<torch::jit::script::Module> g_model;
@@ -21,9 +19,9 @@ std::vector<std::thread> g_thread_vec;
 
 std::string img_path = "./pic/noise_Testing.png";
 std::string log_path = "./Log/DenoiseLog.txt";
-//FILE* fp = fopen(log_path.c_str(), "a");
+// 日志对象
 Log* g_log;
-//ThreadPool g_pool(THREAD_NUM);
+
 
 cv::Mat m_image_return;
 
@@ -69,41 +67,24 @@ void MainLoopDenoise(std::string fileName) {
     }
 }
 
-//void ThreadPoolDenoise() {
-//    DenoiseOP* op = new DenoiseOP();
-//    op->LoadImage(img_path);
-//    g_pool.AddTask(op);
-//}
-
 void logOP() {
     // C:/Users/liuzhiyi/Desktop/UnetDenoise/
     
-    //std::shared_ptr<torch::jit::script::Module> model = std::make_shared<torch::jit::script::Module>(model_path);
     std::cout << "model path: " << g_model_path << std::endl;
     std::cout << "img path: " << img_path << std::endl;
-    //fprintf(fp, "global model path: %s\n", g_model_path.c_str());
-    //fprintf(fp, "global img path: %s\n", img_path.c_str());
+
     std::cout << "init model" << std::endl;
     Init();
     g_log->writeLog("Denoise success");
     std::cout << g_log->getLogFileName()<< std::endl;
     std::cout << "main loop begin" << std::endl;
-    /*MainLoopDenoise();*/
-    //ThreadPoolDenoise();
-    //return 0;
+
 }
 
 DenoiseOP::DenoiseOP(){
     /*m_model_ = std::make_shared<torch::jit::script::Module>(torch::jit::load(m_model_path_));*/
 }
 
-//DenoiseOP::DenoiseOP(const std::string model_path) {
-//  std::cout << "load model is beginning\n";
-//  m_model_path_ = model_path;
-//  m_model_ = std::make_shared<torch::jit::script::Module>(torch::jit::load(m_model_path_));
-//  std::cout << "model is loaded\n";
-//
-//}
 
 DenoiseOP::~DenoiseOP() {
     if (m_image_.data)
@@ -131,15 +112,18 @@ void DenoiseOP::Denoise() {
     int img_height = im.rows;
     int img_channels = im.channels();
     torch::TensorOptions options(torch::kFloat32);
+
     // transform cv::Mat to tensor
     auto img_tensor = torch::from_blob(im.data, { 1, img_height, img_width, img_channels }, options);
     img_tensor = img_tensor.permute({ 0,3,1,2 });
     auto img_var = torch::autograd::make_variable(img_tensor, false).to(m_device);
+
     // input tensor
     std::vector<torch::jit::IValue> inputs;
     inputs.push_back(img_var);
     cv::Mat img_post;
     at::Tensor output;
+    // 模型进行推理
     try {
         output = g_model->forward(inputs).toTensor().to(torch::kCPU).squeeze();
     } catch (const c10::Error& e) {
@@ -181,6 +165,7 @@ void DenoiseOP::DenoiseUML() {
         //cv::waitKey(0);
         return;
     }
+    // 先进行模型推理，再进行UML锐化
     Denoise();
     // USM sharpening
 
@@ -200,5 +185,3 @@ cv::Mat DenoiseOP::GetImage() {
     }
     return m_image_;
 }
-
-
