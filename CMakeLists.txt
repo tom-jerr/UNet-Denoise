@@ -15,7 +15,7 @@ find_package(OpenCV REQUIRED)
 find_package(Torch REQUIRED)
 set(CMAKE_CUDA_COMPILER "/usr/local/cuda-11.8/bin/nvcc")
 # set(CMAKE_BUILD_TYPE "Release")
-include_directories(include)
+include_directories(include, ${OpenCV_INCLUDE_DIRS}, ${TORCH_INCLUDE_DIRS})
 add_subdirectory(test)
 add_subdirectory(src)
 

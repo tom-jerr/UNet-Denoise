@@ -1,30 +1,31 @@
+/*
+Copyright [2023] <Copyright LZY>
+*/
 #include <iostream>
-
+#include <random>
+#include <utility>
 // torch heade
 #include "torch/script.h"
 #include "torch/torch.h"
 
 // OpenCV header
-#include "../include/CLDenoise.h"
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
-#include <random>
-
+#include "../include/CLDenoise.h"
 namespace neo {
-cv::Mat add_noise(cv::Mat Image) {
+cv::Mat addNoise(cv::Mat Image) {
   // cv::Mat Image = image.clone();
   // 添加随机噪声
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::normal_distribution<> d(0, 25); // 均值为0，标准差为25的正态分布
+  std::normal_distribution<> d(0, 25);  // 均值为0，标准差为25的正态分布
 
   for (int y = 0; y < Image.rows; y++) {
     for (int x = 0; x < Image.cols; x++) {
       for (int c = 0; c < Image.channels();
-           c++) { // 对于RGBA图像，需要遍历4个通道
+           c++) {  // 对于RGBA图像，需要遍历4个通道
         double noise = d(gen);
-        ;
         uchar &pixel = Image.at<cv::Vec4b>(y, x)[c];
         pixel = cv::saturate_cast<uchar>(pixel + noise);
       }
@@ -37,7 +38,7 @@ DenoiseOP::DenoiseOP() {
   m_model_ = std::make_shared<torch::jit::script::Module>(m_model_path_);
 }
 
-DenoiseOP::DenoiseOP(const std::string model_path) {
+DenoiseOP::DenoiseOP(const std::string& model_path) {
   std::cout << "load model is beginning\n";
   m_model_path_ = model_path;
   m_model_ = std::make_shared<torch::jit::script::Module>(m_model_path_);
@@ -45,11 +46,10 @@ DenoiseOP::DenoiseOP(const std::string model_path) {
 }
 
 DenoiseOP::~DenoiseOP() {
-  if (m_image_.data)
-    m_image_.release();
+  if (m_image_.data) m_image_.release();
 }
 
-void DenoiseOP::LoadImage(std::string image_path) {
+void DenoiseOP::LoadImage(const std::string& image_path) {
   m_image_ = cv::imread(image_path, cv::IMREAD_COLOR);
   int width = m_image_.rows;
   int height = m_image_.cols;
@@ -59,7 +59,7 @@ void DenoiseOP::LoadImage(std::string image_path) {
 }
 
 void DenoiseOP::LoadImage(cv::Mat image) {
-  m_image_ = image;
+  m_image_ = std::move(image);
   int width = m_image_.rows;
   int height = m_image_.cols;
   m_image_size_ = std::make_pair(width, height);
@@ -68,14 +68,14 @@ void DenoiseOP::LoadImage(cv::Mat image) {
 }
 
 void DenoiseOP::Denoise() {
-  torch::Device m_device = torch::Device(m_device_type_);
+  auto m_device = torch::Device(m_device_type_);
   if (!m_image_.data) {
     std::cout << "Error: image is empty!" << std::endl;
     return;
   }
   cv::Mat im = m_image_;
   // convert to float and normalize
-  im.convertTo(im, CV_32FC3, 1.f / 255.f);
+  im.convertTo(im, CV_32FC3, 1.F / 255.F);
   int img_width = im.cols;
   int img_height = im.rows;
   int img_channels = im.channels();
@@ -87,7 +87,7 @@ void DenoiseOP::Denoise() {
   auto img_var = torch::autograd::make_variable(img_tensor, false).to(m_device);
   // input tensor
   std::vector<torch::jit::IValue> inputs;
-  inputs.push_back(img_var);
+  inputs.emplace_back(img_var);
   cv::Mat img_post;
   at::Tensor output;
   try {
@@ -109,7 +109,8 @@ void DenoiseOP::Denoise() {
 
 void DenoiseOP::DenoiseUML() {
   cv::Mat kernal = (cv::Mat_<int>(3, 3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
-  cv::Mat result, dst;
+  cv::Mat result;
+  cv::Mat dst;
 
   if (!m_image_.data) {
     std::cout << "Error: image is empty!" << std::endl;
@@ -140,7 +141,7 @@ void DenoiseOP::DenoiseUML() {
 
 cv::Mat DenoiseOP::GetImage() {
   if (!m_image_.data) {
-    std::runtime_error("Error: image is empty!");
+    throw std::runtime_error("Error: image is empty!");
   }
   if (m_image_size_.first != 0 && m_image_size_.second != 0) {
     cv::resize(m_image_, m_image_,
@@ -149,4 +150,4 @@ cv::Mat DenoiseOP::GetImage() {
   return m_image_;
 }
 
-} // namespace neo
+}  // namespace neo

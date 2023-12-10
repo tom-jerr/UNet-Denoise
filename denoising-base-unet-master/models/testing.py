@@ -4,7 +4,8 @@ from torchvision import transforms
 import utils
 import torch 
 from torch.autograd import Variable
-
+import sys
+sys.path.append('./denoising-base-unet-master')
 
 utils.makeDirectories()
 batch_size = 128
@@ -12,7 +13,7 @@ batch_size = 128
 model = BaseUNet(3, 3)
 # model.cuda()
 model.eval()
-model.load_state_dict(torch.load('../saved_model/cifar10_base_unet.pth', map_location='cpu'))
+model.load_state_dict(torch.load('./denoising-base-unet-master/saved_model/cifar10_base_unet.pth', map_location='cpu'))
 
 # data = CIFAR10('./data', download=True, transform=utils.to_32_32_transform(),train=False)
 # dataset = DataLoader(data, batch_size=batch_size, shuffle=True)
@@ -26,7 +27,7 @@ transfrom_valid = transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.ToTensor(),
     ])
-img_path = '../img.png'
+img_path = './pic/img.png'
 print("input image")
 img = Image.open(img_path)
 img = transfrom_valid(img).unsqueeze(0)
