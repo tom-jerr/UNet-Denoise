@@ -11,6 +11,7 @@ saved_model
 lightning_logs
 test_images
 UI
-
+.VSCodeCounter
 /*.zip
 /*.docx
+events.*

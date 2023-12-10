@@ -40,7 +40,6 @@ def _to_img_128(img, noise_img, output):
     noise = to_img_128(noise_img.data)
     unet_output = to_img_128(output.data)
     return ground_truth, noise, unet_output
-
 def to_32_32_transform():
     return transforms.Compose([
         transforms.Resize((32, 32)),

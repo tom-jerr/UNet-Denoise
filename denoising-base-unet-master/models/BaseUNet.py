@@ -4,7 +4,7 @@ from TransitionBlock import TransitionBlock
 from DownBlock import DownBlock
 from DenseBlock import DenseBlock
 from UpBlock import UpBlock
-
+# from tensorboardX import SummaryWriter 
 
 class BaseUNet(nn.Module):
     def __init__(self, input_channels, output_channels):
@@ -52,3 +52,14 @@ class BaseUNet(nn.Module):
         x= self.conv_last(x)
         x = x.sigmoid() * 255
         return x
+    
+if __name__ == "__main__":
+    from torchinfo import summary
+    model = BaseUNet(3, 3)
+    input = torch.rand(1, 3, 128, 128)
+    output = model(input)
+    # print(output.shape)
+    # writer = SummaryWriter("./models")
+    # writer.add_graph(model, torch.rand(1, 3, 128, 128))
+    # writer.close()
+    summary(model, input_size=(1, 3, 128, 128))

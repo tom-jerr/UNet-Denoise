@@ -49,130 +49,30 @@ target_link_libraries(DNOISE ${TORCH_LIBRARIES} ${OpenCV_LIBS})
 ![Alt text](image-4.png)
 
 ## 补充
-- 我们实现的Unet
+
+### TransitionBlock
+![Alt text](image-1.png)
+### DownBlock
+![Alt text](image.png)
+### DenseBlock
+![Alt text](image-2.png)
+### UpBlock
+![Alt text](image-3.png)
+### 我们的Unet结构
 ~~~shell
-~~~shell
-BaseUNet(
-  (trans1): TransitionBlock(
-    (conv1): Conv2d(3, 8, kernel_size=(1, 1), stride=(1, 1))
-    (pool): MaxPool2d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-    (conv2): Conv2d(3, 8, kernel_size=(1, 1), stride=(1, 1))
-    (conv31): Conv2d(3, 8, kernel_size=(1, 1), stride=(1, 1))
-    (conv32): Conv2d(8, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv41): Conv2d(3, 8, kernel_size=(1, 1), stride=(1, 1))
-    (conv42): Conv2d(8, 8, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
-    (convf): Conv2d(32, 8, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (down1): DownBlock(
-    (conv1): Conv2d(8, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(8, 12, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
-    (conv3): Conv2d(8, 12, kernel_size=(3, 3), stride=(1, 1), padding=(5, 5), dilation=(5, 5))
-    (conv4): Conv2d(36, 16, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (conv5): Conv2d(16, 16, kernel_size=(1, 1), stride=(1, 1))
-    (batch_norm): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (down2): DownBlock(
-    (conv1): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
-    (conv3): Conv2d(16, 24, kernel_size=(3, 3), stride=(1, 1), padding=(5, 5), dilation=(5, 5))
-    (conv4): Conv2d(72, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (conv5): Conv2d(32, 32, kernel_size=(1, 1), stride=(1, 1))
-    (batch_norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (down3): DownBlock(
-    (conv1): Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
-    (conv3): Conv2d(32, 48, kernel_size=(3, 3), stride=(1, 1), padding=(5, 5), dilation=(5, 5))
-    (conv4): Conv2d(144, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (conv5): Conv2d(64, 64, kernel_size=(1, 1), stride=(1, 1))
-    (batch_norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (down4): DownBlock(
-    (conv1): Conv2d(64, 80, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(64, 80, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
-    (conv3): Conv2d(64, 80, kernel_size=(3, 3), stride=(1, 1), padding=(5, 5), dilation=(5, 5))
-    (conv4): Conv2d(240, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (conv5): Conv2d(96, 96, kernel_size=(1, 1), stride=(1, 1))
-    (batch_norm): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (down5): DownBlock(
-    (conv1): Conv2d(96, 112, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(96, 112, kernel_size=(3, 3), stride=(1, 1), padding=(3, 3), dilation=(3, 3))
-    (conv3): Conv2d(96, 112, kernel_size=(3, 3), stride=(1, 1), padding=(5, 5), dilation=(5, 5))
-    (conv4): Conv2d(336, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-    (conv5): Conv2d(128, 128, kernel_size=(1, 1), stride=(1, 1))
-    (batch_norm): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (trans2): TransitionBlock(
-    (conv1): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
-    (pool): MaxPool2d(kernel_size=3, stride=1, padding=1, dilation=1, ceil_mode=False)
-    (conv2): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
-    (conv31): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
-    (conv32): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv41): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1))
-    (conv42): Conv2d(256, 256, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
-    (convf): Conv2d(1024, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (dense): DenseBlock(
-    (conv1): Conv2d(256, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(12, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (conv2): Conv2d(268, 12, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv3): Conv2d(280, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm3): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (up1): UpBlock(
-    (conv1): Conv2d(384, 240, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (upsample): Upsample(scale_factor=2.0, mode='bilinear')
-    (conv_compensate): Conv2d(240, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (up2): UpBlock(
-    (conv1): Conv2d(192, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (upsample): Upsample(scale_factor=2.0, mode='bilinear')
-    (conv_compensate): Conv2d(128, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (up3): UpBlock(
-    (conv1): Conv2d(128, 80, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (upsample): Upsample(scale_factor=2.0, mode='bilinear')
-    (conv_compensate): Conv2d(80, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (up4): UpBlock(
-    (conv1): Conv2d(64, 40, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (upsample): Upsample(scale_factor=2.0, mode='bilinear')
-    (conv_compensate): Conv2d(40, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (up5): UpBlock(
-    (conv1): Conv2d(32, 24, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (upsample): Upsample(scale_factor=2.0, mode='bilinear')
-    (conv_compensate): Conv2d(24, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (conv2): Conv2d(16, 16, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
-    (batch_norm): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    (relu): ReLU()
-  )
-  (conv_last): Conv2d(16, 3, kernel_size=(1, 1), stride=(1, 1))
-)
-Number of parameters in the model: 8268663
+BaseUNet                                 [1, 3, 128, 128]          
+├─TransitionBlock: 1-1                   [1, 8, 128, 128]          
+├─DownBlock: 1-2                         [1, 16, 64, 64]           
+├─DownBlock: 1-3                         [1, 32, 32, 32]           
+├─DownBlock: 1-4                         [1, 64, 16, 16]           
+├─DownBlock: 1-5                         [1, 96, 8, 8]             
+├─DownBlock: 1-6                         [1, 128, 4, 4]            
+├─TransitionBlock: 1-7                   [1, 256, 4, 4]            
+├─DenseBlock: 1-8                        [1, 256, 4, 4]            
+├─UpBlock: 1-9                           [1, 96, 8, 8]             
+├─UpBlock: 1-10                          [1, 64, 16, 16]           
+├─UpBlock: 1-13                          [1, 16, 128, 128]         
+├─Conv2d: 1-14                           [1, 3, 128, 128]          
 ~~~
 
 ~~~
