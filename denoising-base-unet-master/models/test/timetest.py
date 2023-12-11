@@ -1,6 +1,6 @@
 import sys, os
 sys.path.append('./denoising-base-unet-master')
-# print(sys.path)
+sys.path.append('./denoising-base-unet-master/models')
 from models.DenseBlock import DenseBlock
 from models.DownBlock import DownBlock
 from models.UpBlock import UpBlock
@@ -59,18 +59,27 @@ total_psnr = 0
 import time
 img_path = './pic/docker_original.png'
 start = time.time()
-for _ in range(50):
+# for _ in range(50):
 
-    img = Image.open(img_path)
-    img = transfrom_valid(img).unsqueeze(0)
-    # img = img.cuda()
+img = Image.open(img_path)
+img = transfrom_valid(img).unsqueeze(0)
+# img = img.cuda()
 
 
-    noise_img = Variable(
-        img+img.data.new(img.size()).normal_(0.0, 0.1))
-    output = model(noise_img)
+noise_img = Variable(
+    img+img.data.new(img.size()).normal_(0.0, 0.1))
+output = model(noise_img)
 end = time.time()
+# 显示图片
+ground_truth,noise,unet_output= utils._to_img_128(img, noise_img, output)
+utils._save_test_image(ground_truth, noise, unet_output, epoch='Testing')
+noise_image = Image.open('./denoising-base-unet-master/test_images/noise_Testing.png')
+noise_image.show()
+
+
 print('time:{} ms'.format((end-start)*1000))
+file = open("./log/pythonlog.txt",'w')
+print('time:{} ms'.format((end-start)*1000), file=file)
 
 
 

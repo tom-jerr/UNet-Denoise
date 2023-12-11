@@ -26,9 +26,10 @@ def _save_image(ground_truth, noise, unet_output, epoch):
     save_image(unet_output, '../result_images/unet_output_{}.png'.format(epoch))
 
 def _save_test_image(ground_truth, noise, unet_output, epoch):
-    save_image(ground_truth, '../test_images/ground_truth_{}.png'.format(epoch))
-    save_image(noise, '../test_images/noise_{}.png'.format(epoch))
-    save_image(unet_output, '../test_images/unet_output_{}.png'.format(epoch))
+    save_image(ground_truth, './denoising-base-unet-master/test_images/ground_truth_{}.png'.format(epoch))
+    save_image(noise, './denoising-base-unet-master/test_images/noise_{}.png'.format(epoch))
+    save_image(unet_output, './denoising-base-unet-master/test_images/unet_output_{}.png'.format(epoch))
+
 def _to_img(img, noise_img, output):
     ground_truth = to_img(img.cpu().data)
     noise = to_img(noise_img.cpu().data)

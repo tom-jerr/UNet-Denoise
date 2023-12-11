@@ -1,0 +1,9 @@
+Image:0 MSE_loss:0.0028
+Image:0 noise_loss:0.0100
+Image:0 img_PSNR: 25.4806 dB
+Image:0 noise_PSNR: 20.0028 dB
+Image:1 MSE_loss:0.0039
+Image:1 noise_loss:0.0101
+Image:1 img_PSNR: 24.0631 dB
+Image:1 noise_PSNR: 19.9689 dB
+average psnr: 24.7719 / 2 images dB

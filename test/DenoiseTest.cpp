@@ -4,6 +4,7 @@ Copyright [2023] <Copyright LZY>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <iostream>
 
 // torch header
@@ -25,11 +26,12 @@ int main() {
   // C:/Users/liuzhiyi/Desktop/UnetDenoise/
   std::string model_path = "libtorch-model-gpu.pt";
   std::string img_path = "img.png";
+  std::string log_path = "../../log/c++log.txt";
   // std::shared_ptr<torch::jit::script::Module> model =
   // std::make_shared<torch::jit::script::Module>(model_path);
   std::cout << "model path: " << model_path << std::endl;
   std::cout << "img path: " << img_path << std::endl;
-
+  FILE *fp = fopen(log_path.c_str(), "w");
   cv::Mat img = cv::imread(img_path);
   cv::Mat noise_img = neo::addNoise(img);
 
@@ -53,8 +55,10 @@ int main() {
   std::cout << (end.tv_sec - start.tv_sec) * 1000 +
                    (end.tv_usec - start.tv_usec) / 1000
             << "ms" << std::endl;
-  std::cout << "time: " << (end.tv_sec - start.tv_sec) << "s" << std::endl;
+  
+  fprintf(fp, "time: %ldms\n", (end.tv_sec - start.tv_sec) * 1000 +
+                                   (end.tv_usec - start.tv_usec) / 1000);
   cv::waitKey(0);
-
+  fclose(fp);
   return 0;
 }

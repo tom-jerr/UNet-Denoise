@@ -1,11 +1,12 @@
+import sys
+sys.path.append('./denoising-base-unet-master')
 from BaseUNet import BaseUNet
 from PIL import Image
 from torchvision import transforms
 import utils
 import torch 
 from torch.autograd import Variable
-import sys
-sys.path.append('./denoising-base-unet-master')
+
 
 utils.makeDirectories()
 batch_size = 128
