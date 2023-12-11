@@ -1,6 +1,9 @@
 # 图像去噪系统
 - 基于windows 10/11
 - 后端算法(master分支)：基于Unet的去噪模型+UML锐化算法
+- model-ubuntu：是在WSL ubuntu20.04上面进行模型测试和训练的分支
+  - 模型可以通过pytorch，libtorch，CUDA等第三方库实现跨平台的应用
+
 ## 前端
 - 基于QT进行页面构建
 
